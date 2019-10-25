@@ -7,10 +7,15 @@ import api from '../../services/api';
 
 import Container from '../../components/Container/index';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Input } from './styles';
 
 export default class Main extends Component {
-  state = { newRepo: '', repositories: [], loading: false };
+  state = {
+    newRepo: '',
+    repositories: [],
+    loading: false,
+    agoravai: false,
+  };
 
   componentDidMount() {
     const repositories = localStorage.getItem('repositories');
@@ -39,21 +44,26 @@ export default class Main extends Component {
 
     const { newRepo, repositories } = this.state;
 
-    const response = await api.get(`/repos/${newRepo}`);
+    try {
+      const response = await api.get(`/repos/${newRepo}`);
+      const data = {
+        name: response.data.full_name,
+      };
 
-    const data = {
-      name: response.data.full_name,
-    };
-
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        loading: false,
+        agoravai: false,
+      });
+    } catch (err) {
+      console.log(err);
+      this.setState({ loading: false, agoravai: true });
+    }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, agoravai } = this.state;
 
     return (
       <Container>
@@ -63,8 +73,8 @@ export default class Main extends Component {
         </h1>
 
         <Form onSubmit={this.handleSubmit}>
-          <input
-            type="text"
+          <Input
+            agoravai={agoravai}
             placeholder="Adicionar repositório"
             value={newRepo}
             onChange={this.handleInputChange}
