@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const rotate = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Loading = styled.div`
   color: #fff;
@@ -8,6 +17,48 @@ export const Loading = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
+
+  svg {
+    animation: ${rotate} 2s linear infinite;
+  }
+`;
+
+export const Pagination = styled.nav`
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-top: 1px solid #eee;
+`;
+
+export const Button = styled.button.attrs(props => ({
+  loading: props.loading,
+}))`
+  text-align: center;
+  height: 45px;
+  width: 120px;
+  background-color: #7159c1;
+  color: #fff;
+  border: none;
+  margin: 1px;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+
+  &[disabled] {
+    cursor: auto;
+    opacity: 0 !important;
+  }
+  /* Work here later*/
+  ${props =>
+    props.loading &&
+    css`
+      svg {
+        animation: ${rotate} 2s linear infinite;
+      }
+    `}
 `;
 
 export const Owner = styled.header`
@@ -43,8 +94,8 @@ export const Owner = styled.header`
 `;
 
 export const IssueList = styled.ul`
-  padding-top: 30px;
-  margin-top: 30px;
+  padding-top: 15px;
+  margin-top: 15px;
   border-top: 1px solid #eee;
   list-style: none;
 

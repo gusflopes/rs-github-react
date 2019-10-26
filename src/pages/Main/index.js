@@ -14,7 +14,7 @@ export default class Main extends Component {
     newRepo: '',
     repositories: [],
     loading: false,
-    agoravai: false,
+    validation: false,
   };
 
   componentDidMount() {
@@ -42,9 +42,13 @@ export default class Main extends Component {
 
     this.setState({ loading: true });
 
-    const { newRepo, repositories } = this.state;
-
     try {
+      const { newRepo, repositories } = this.state;
+      const repoExists = repositories.find(o => o.name === newRepo);
+      if (repoExists) {
+        throw new Error('Repositório duplicado');
+      }
+
       const response = await api.get(`/repos/${newRepo}`);
       const data = {
         name: response.data.full_name,
@@ -54,16 +58,15 @@ export default class Main extends Component {
         repositories: [...repositories, data],
         newRepo: '',
         loading: false,
-        agoravai: false,
+        validation: false,
       });
     } catch (err) {
-      console.log(err);
-      this.setState({ loading: false, agoravai: true });
+      this.setState({ loading: false, validation: true });
     }
   };
 
   render() {
-    const { newRepo, repositories, loading, agoravai } = this.state;
+    const { newRepo, repositories, loading, validation } = this.state;
 
     return (
       <Container>
@@ -74,10 +77,11 @@ export default class Main extends Component {
 
         <Form onSubmit={this.handleSubmit}>
           <Input
-            agoravai={agoravai}
+            validation={validation}
             placeholder="Adicionar repositório"
             value={newRepo}
             onChange={this.handleInputChange}
+            onFocus={() => this.setState({ newRepo: '', validation: false })}
           />
 
           <SubmitButton loading={loading}>

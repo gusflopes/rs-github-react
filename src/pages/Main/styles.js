@@ -37,6 +37,15 @@ const rotate = keyframes`
   }
 `;
 
+const validateFails = keyframes`
+0% {margin-left: 0;}
+25% {margin-left: 5px;}
+50% {margin-left: 0;}
+75% {margin-left: -5px;}
+100% {margin-left: 0;}
+
+`;
+
 export const SubmitButton = styled.button.attrs(props => ({
   type: 'submit',
   disabled: props.loading,
@@ -55,9 +64,7 @@ export const SubmitButton = styled.button.attrs(props => ({
     cursor: not-allowed;
     opacity: 0.6;
   }
-  /* svg {
-    animation: ${rotate} 2s linear infinite;
-  */
+  /** This is used to change based on the state (loading: true or false) */
   ${props =>
     props.loading &&
     css`
@@ -69,20 +76,25 @@ export const SubmitButton = styled.button.attrs(props => ({
 
 export const Input = styled.input.attrs(props => ({
   type: 'text',
-  error: props.agoravai,
+  validation: props.validation,
 }))`
   flex: 1;
   border: 1px solid #eee;
   padding: 10px 15px;
   border-radius: 4px;
   font-size: 16px;
-  background: #000;
 
-  &[agoravai] {
-    background: #7159c1 !important;
+  :focus {
+    border-color: #4bb5;
   }
 
-  ${props => props.loading}
+  ${props =>
+    props.validation &&
+    css`
+      border-color: #f31431 !important;
+      animation: ${validateFails} 0.1s;
+      animation-iteration-count: 3;
+    `}
 `;
 
 export const List = styled.ul`
